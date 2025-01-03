@@ -89,7 +89,7 @@ pub fn layout_grid(
     )
     .trace(engine.world, tracepoint, elem.span())?;
 
-    let mut layouter = GridLayouter::new(&grid, regions, styles, elem.span());
+    let layouter = GridLayouter::new(&grid, regions, styles, elem.span());
 
     // Measure the columns and layout the grid row-by-row.
     let mut fragment = layouter.layout(engine)?;
@@ -159,7 +159,7 @@ pub fn layout_table(
     )
     .trace(engine.world, tracepoint, elem.span())?;
 
-    let mut layouter = GridLayouter::new(&grid, regions, styles, elem.span());
+    let layouter = GridLayouter::new(&grid, regions, styles, elem.span());
     let mut fragment = layouter.layout(engine)?;
 
     // Handle writing mode.
