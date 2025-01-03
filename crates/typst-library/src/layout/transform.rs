@@ -4,7 +4,7 @@ use crate::foundations::{
     cast, elem, Content, NativeElement, Packed, Show, Smart, StyleChain,
 };
 use crate::layout::{
-    Abs, Alignment, Angle, BlockElem, HAlignment, Length, Ratio, Rel, VAlignment,
+    Abs, Alignment, Angle, BlockElem, HAlignment, Length, Ratio, Rel, VAlignment, WritingMode,
 };
 
 /// Moves content without affecting layout.
@@ -32,6 +32,9 @@ pub struct MoveElem {
 
     /// The vertical displacement of the content.
     pub dy: Rel<Length>,
+
+    /// The writing mode for the content.
+    pub writing_mode: Option<WritingMode>,
 
     /// The content to move.
     #[required]
@@ -101,6 +104,9 @@ pub struct RotateElem {
     /// ```
     #[default(false)]
     pub reflow: bool,
+
+    /// The writing mode for the content.
+    pub writing_mode: Option<WritingMode>,
 
     /// The content to rotate.
     #[required]
@@ -173,6 +179,9 @@ pub struct ScaleElem {
     /// ```
     #[default(false)]
     pub reflow: bool,
+
+    /// The writing mode for the content.
+    pub writing_mode: Option<WritingMode>,
 
     /// The content to scale.
     #[required]
@@ -259,6 +268,9 @@ pub struct SkewElem {
     /// ```
     #[default(false)]
     pub reflow: bool,
+
+    /// The writing mode for the content.
+    pub writing_mode: Option<WritingMode>,
 
     /// The content to skew.
     #[required]

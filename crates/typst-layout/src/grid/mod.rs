@@ -17,7 +17,7 @@ use typst_library::foundations::{Fold, Packed, Smart, StyleChain};
 use typst_library::introspection::Locator;
 use typst_library::layout::{
     Abs, Alignment, Axes, Dir, Fragment, GridCell, GridChild, GridElem, GridItem, Length,
-    OuterHAlignment, OuterVAlignment, Regions, Rel, Sides,
+    OuterHAlignment, OuterVAlignment, Regions, Rel, Sides, WritingMode,
 };
 use typst_library::model::{TableCell, TableChild, TableElem, TableItem};
 use typst_library::text::TextElem;
@@ -52,6 +52,7 @@ pub fn layout_grid(
     let row_gutter = elem.row_gutter(styles);
     let fill = elem.fill(styles);
     let stroke = elem.stroke(styles);
+    let writing_mode = elem.writing_mode(styles);
 
     let tracks = Axes::new(columns.0.as_slice(), rows.0.as_slice());
     let gutter = Axes::new(column_gutter.0.as_slice(), row_gutter.0.as_slice());
@@ -91,7 +92,17 @@ pub fn layout_grid(
     let layouter = GridLayouter::new(&grid, regions, styles, elem.span());
 
     // Measure the columns and layout the grid row-by-row.
-    layouter.layout(engine)
+    let mut fragment = layouter.layout(engine)?;
+
+    // Handle writing mode.
+    if let Some(writing_mode) = writing_mode {
+        let angle = writing_mode.rotation_angle();
+        for frame in fragment.iter_mut() {
+            frame.transform(typst_library::layout::Transform::rotate(angle));
+        }
+    }
+
+    Ok(fragment)
 }
 
 /// Layout the table.
@@ -111,6 +122,7 @@ pub fn layout_table(
     let row_gutter = elem.row_gutter(styles);
     let fill = elem.fill(styles);
     let stroke = elem.stroke(styles);
+    let writing_mode = elem.writing_mode(styles);
 
     let tracks = Axes::new(columns.0.as_slice(), rows.0.as_slice());
     let gutter = Axes::new(column_gutter.0.as_slice(), row_gutter.0.as_slice());
@@ -148,7 +160,17 @@ pub fn layout_table(
     .trace(engine.world, tracepoint, elem.span())?;
 
     let layouter = GridLayouter::new(&grid, regions, styles, elem.span());
-    layouter.layout(engine)
+    let mut fragment = layouter.layout(engine)?;
+
+    // Handle writing mode.
+    if let Some(writing_mode) = writing_mode {
+        let angle = writing_mode.rotation_angle();
+        for frame in fragment.iter_mut() {
+            frame.transform(typst_library::layout::Transform::rotate(angle));
+        }
+    }
+
+    Ok(fragment)
 }
 
 fn grid_item_to_resolvable(

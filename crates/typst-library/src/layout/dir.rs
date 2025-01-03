@@ -130,3 +130,59 @@ impl Repr for Dir {
         }
     }
 }
+
+/// The writing modes for block level content.
+///
+/// Possible values are:
+/// - `{horizontal_tb}`: Horizontal top to bottom.
+/// - `{vertical_rl}`: Vertical right to left.
+/// - `{vertical_lr}`: Vertical left to right.
+///
+/// These values are available globally and also in the writing mode type's scope.
+#[ty(scope, name = "writing_mode")]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Hash)]
+pub enum WritingMode {
+    /// Horizontal top to bottom.
+    HorizontalTB,
+    /// Vertical right to left.
+    VerticalRL,
+    /// Vertical left to right.
+    VerticalLR,
+}
+
+impl WritingMode {
+    /// Determine the text direction for the writing mode.
+    pub const fn text_direction(self) -> Dir {
+        match self {
+            Self::HorizontalTB => Dir::LTR,
+            Self::VerticalRL => Dir::TTB,
+            Self::VerticalLR => Dir::TTB,
+        }
+    }
+
+    /// Determine the rotation angle for the writing mode.
+    pub const fn rotation_angle(self) -> f64 {
+        match self {
+            Self::HorizontalTB => 0.0,
+            Self::VerticalRL => 90.0,
+            Self::VerticalLR => -90.0,
+        }
+    }
+}
+
+#[scope]
+impl WritingMode {
+    pub const HORIZONTAL_TB: Self = Self::HorizontalTB;
+    pub const VERTICAL_RL: Self = Self::VerticalRL;
+    pub const VERTICAL_LR: Self = Self::VerticalLR;
+}
+
+impl Repr for WritingMode {
+    fn repr(&self) -> EcoString {
+        match self {
+            Self::HorizontalTB => "horizontal_tb".into(),
+            Self::VerticalRL => "vertical_rl".into(),
+            Self::VerticalLR => "vertical_lr".into(),
+        }
+    }
+}

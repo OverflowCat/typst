@@ -80,3 +80,10 @@ Hi
 --- issue-5024-spill-backlog ---
 #set page(columns: 2, height: 50pt)
 #columns(2)[Hello]
+
+--- vertical-writing-mode-test ---
+// Test case to demonstrate vertical writing mode for Chinese text.
+#set page(height: 200pt)
+#block(writing-mode: vertical_rl)[
+  直排中文示例
+]
