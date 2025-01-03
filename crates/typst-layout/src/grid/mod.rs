@@ -98,7 +98,7 @@ pub fn layout_grid(
     if let Some(writing_mode) = writing_mode {
         let angle = writing_mode.rotation_angle();
         for frame in fragment.iter_mut() {
-            frame.rotate(angle);
+            frame.transform(typst_library::layout::Transform::rotate(angle));
         }
     }
 
@@ -166,7 +166,7 @@ pub fn layout_table(
     if let Some(writing_mode) = writing_mode {
         let angle = writing_mode.rotation_angle();
         for frame in fragment.iter_mut() {
-            frame.rotate(angle);
+            frame.transform(typst_library::layout::Transform::rotate(angle));
         }
     }
 
