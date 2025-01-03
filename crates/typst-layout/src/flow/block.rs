@@ -7,7 +7,7 @@ use typst_library::foundations::{Packed, Resolve, StyleChain};
 use typst_library::introspection::Locator;
 use typst_library::layout::{
     Abs, Axes, BlockBody, BlockElem, Fragment, Frame, FrameKind, Region, Regions, Rel,
-    Sides, Size, Sizing,
+    Sides, Size, Sizing, WritingMode,
 };
 use typst_library::visualize::Stroke;
 use typst_utils::Numeric;
@@ -91,6 +91,12 @@ pub fn layout_single_block(
     // Add fill and/or stroke.
     if fill.is_some() || stroke.iter().any(Option::is_some) {
         fill_and_stroke(&mut frame, fill, &stroke, &outset, &radius, elem.span());
+    }
+
+    // Handle writing mode.
+    if let Some(writing_mode) = elem.writing_mode(styles) {
+        let angle = writing_mode.rotation_angle();
+        frame.rotate(angle);
     }
 
     // Assign label to each frame in the fragment.
@@ -237,6 +243,12 @@ pub fn layout_multi_block(
         // Add fill and/or stroke.
         if has_fill_or_stroke && (i > 0 || !skip_first) {
             fill_and_stroke(frame, fill.clone(), &stroke, &outset, &radius, elem.span());
+        }
+
+        // Handle writing mode.
+        if let Some(writing_mode) = elem.writing_mode(styles) {
+            let angle = writing_mode.rotation_angle();
+            frame.rotate(angle);
         }
     }
 
